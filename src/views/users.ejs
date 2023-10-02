@@ -70,7 +70,7 @@
                             <%= data.username %>
                         </td>
                         <td>
-                            <%= data.phonenumber %>
+                            <%= data.phone %>
                         </td>
                         <td>
                             <%= data.email %>
@@ -81,9 +81,7 @@
     
                         <td>
                             <a class="btn btn-success p-2" type="button" href="/user/<%= data.id %>/update">Edit</a>
-                            <a style="display: inline;" href="/user/<%= data.id %>/delete" method="POST">
-                                <button class="btn-danger p-2" type="submit">Delete</button>
-                            </a>
+                            <a class="btn btn-danger p-2" type="button" href="/user/<%= data.id %>/delete">Delete</a>
                         </td>
                     </tr>
                     <% }); %>

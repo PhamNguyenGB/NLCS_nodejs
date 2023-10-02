@@ -13,13 +13,13 @@ module.exports = {
     */
 
     // bulkInsert: chèn nhiều rows nhiều bảng ghi vào database 1 lúc
-    await queryInterface.bulkInsert('Users', [
+    await queryInterface.bulkInsert('User', [
       {
-        email: 'John Doe',
+        email: 'JohnDoe@gmail.com',
         username: 'Doe123',
         password: '123456',
         address: 'abc123',
-        phonenumber: '1234098763',
+        phone: '1234098763',
       }
     ], {});
   },

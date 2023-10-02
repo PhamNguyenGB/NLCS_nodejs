@@ -31,9 +31,7 @@ const getUpdateUser = async (req, res) => {
     let id = req.params.id;
     let user = await userService.getUserById(id);
     let userData = {};
-    if (user && user.length > 0) {
-        userData = user[0];
-    }
+    userData = user;
     return res.render('user-update.ejs', {data: userData});
 };
 
@@ -41,9 +39,9 @@ const handleUpdateUser = async (req, res) => {
     let email = req.body.email;
     let username = req.body.username;
     let address = req.body.address;
-    let phonenumber = req.body.phonenumber;
+    let phone = req.body.phone;
     let id = req.body.id;
-    await userService.updateUser(email, username, address, phonenumber, id);
+    await userService.updateUser(email, username, address, phone, id);
     return res.redirect('/user');
 };
 
