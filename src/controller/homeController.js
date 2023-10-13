@@ -7,7 +7,7 @@ const homePage = (req, res) => {
 
 const userPage = async (req, res) => {
     let userList = await userService.getUserList();
-    return res.render('users.ejs', {data: userList});
+    return res.render('users.ejs', { data: userList });
 }
 
 const handleCreateUser = (req, res) => {
@@ -23,7 +23,7 @@ const handleCreateUser = (req, res) => {
 };
 
 const handleDeleteUser = async (req, res) => {
-    await userService.deleteUser(req.params.id); 
+    await userService.deleteUser(req.params.id);
     return res.redirect('/user');
 };
 
@@ -32,7 +32,7 @@ const getUpdateUser = async (req, res) => {
     let user = await userService.getUserById(id);
     let userData = {};
     userData = user;
-    return res.render('user-update.ejs', {data: userData});
+    return res.render('user-update.ejs', { data: userData });
 };
 
 const handleUpdateUser = async (req, res) => {
