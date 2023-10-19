@@ -1,5 +1,8 @@
+require('dotenv').config();
 import db from '../models/index'
 import bcrypt from 'bcryptjs';
+import { getGroupWithRole } from './JWTService';
+import { createJWT } from '../middleware/JWTAction';
 
 const salt = bcrypt.genSaltSync(10);
 
@@ -41,16 +44,16 @@ const checkPhone = async (phone) => {
     return false;
 };
 
-const checkInput = async (data) => {
-    let user = await db.User.findOne({
-        where: { data: data }
-    });
+// const checkInput = async (data) => {
+//     let user = await db.User.findOne({
+//         where: { data: data }
+//     });
 
-    if (user) {
-        return true;
-    }
-    return false;
-};
+//     if (user) {
+//         return true;
+//     }
+//     return false;
+// };
 
 const registerNewUser = async (userData) => {
     try {
@@ -92,7 +95,7 @@ const registerNewUser = async (userData) => {
             password: hashPassword,
             address: userData.address,
             phone: userData.phone,
-            groupId: 0
+            groupId: 1
         })
 
         return {
@@ -122,10 +125,22 @@ const handleUserLogin = async (data) => {
         if (user) {
             let isCorrectPassword = await checkPassword(data.password, user.password);
             if (isCorrectPassword === true) {
+                // let token = 
+
+                let groupWithRoles = await getGroupWithRole(user);
+                let payload = {
+                    email: user.email,
+                    groupWithRoles,
+                    expiresIn: process.env.JWT_EXPIRES_IN,
+                }
+                let token = createJWT(payload);
                 return {
                     EM: 'Đăng nhập thành công',
                     EC: 0,
-                    DT: '',
+                    DT: {
+                        access_token: token,
+                        data: groupWithRoles,
+                    },
                 }
             }
         }
@@ -136,10 +151,12 @@ const handleUserLogin = async (data) => {
         }
 
     } catch (error) {
+        console.log(error);
         return {
             EM: 'Lỗi Đăng nhập',
             EC: -2
         }
+
     }
 };
 

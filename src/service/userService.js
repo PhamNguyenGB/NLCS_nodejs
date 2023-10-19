@@ -11,7 +11,7 @@ const connection = mysql.createConnection({
     user: 'root',
     database: 'db_medicine'
 });
-  
+
 const funHashPassWord = (userPass) => {
     let hashPassword = bcrypt.hashSync(userPass, salt);
     return hashPassword;
@@ -27,17 +27,17 @@ const createNewUser = async (email, username, password, phone, address) => {
             password: hashPass,
             address: address,
             phone: phone
-       });
-    } catch(error) {
+        });
+    } catch (error) {
         console.log('check error', error);
     }
 };
 
 const getUserList = async () => {
-    let users = [];
-    users = await db.User.findAll();
+    // let users = [];
+    // users = await db.User.findAll();
     let user = await db.User.findAll({
-        where: { id: 3},
+        where: { id: 3 },
         include: db.Group,
         raw: true,
         nest: true
@@ -57,14 +57,14 @@ const getUserList = async () => {
 
 const deleteUser = async (userId) => {
     await db.User.destroy({
-        where: {id: userId}
+        where: { id: userId }
     });
 };
 
 const getUserById = async (id) => {
     let user = {};
-    user  = await db.User.findOne({
-        where: {id: id}
+    user = await db.User.findOne({
+        where: { id: id }
     });
     return user.get({ plain: true });
 };
