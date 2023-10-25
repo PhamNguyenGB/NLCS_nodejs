@@ -46,7 +46,43 @@ const createProducts = async (req, res) => {
     }
 };
 
+const deleteProducts = async (req, res) => {
+    try {
+        let data = await productApiService.deleteProduct(req.body.id);
+        return res.status(200).json({
+            EM: data.EM,
+            EC: data.EC,
+            DT: data.DT,
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            EM: 'error from server read',
+            EC: '-1',
+        });
+    }
+};
+
+const getListProduct = async (req, res) => {
+    try {
+        let data = await productApiService.getListProductService();
+        return res.status(200).json({
+            EM: data.EM,
+            EC: data.EC,
+            DT: data.DT,
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            EM: 'error from server read',
+            EC: '-1',
+        });
+    }
+};
+
 module.exports = {
     readProducts,
     createProducts,
+    deleteProducts,
+    getListProduct,
 }

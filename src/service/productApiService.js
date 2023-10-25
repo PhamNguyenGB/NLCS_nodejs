@@ -45,7 +45,7 @@ const getProductsWithPagination = async (page, limit) => {
         let data = {
             totalRows: count,
             totalPages: totalPages,
-            users: rows,
+            products: rows,
         }
 
         return {
@@ -66,8 +66,6 @@ const getProductsWithPagination = async (page, limit) => {
 
 const createProduct = async (data) => {
     try {
-        console.log(data);
-
         await db.Product.create({
             name: data.name,
             ingredients: data.ingredients,
@@ -97,8 +95,62 @@ const createProduct = async (data) => {
     }
 };
 
+const deleteProduct = async (id) => {
+    try {
+        let user = await db.Product.findOne({
+            where: { id: id }
+        });
+
+        if (user) {
+            await user.destroy();
+            return {
+                EM: 'Delete product successfully',
+                EC: 0,
+                DT: [],
+            };
+        } else {
+            return {
+                EM: 'product not exist',
+                EC: 2,
+                DT: [],
+            };
+        }
+    } catch (error) {
+        console.log(error);
+        return {
+            EM: 'error from service',
+            EC: 1,
+            DT: [],
+        };
+    }
+};
+
+const getListProductService = async () => {
+    try {
+        let data = await db.List_Product.findAll({
+            order: [
+                ['categoryName', 'ASC']
+            ]
+        });
+        return {
+            EM: 'Get list product successfully',
+            EC: 0,
+            DT: data,
+        };
+    } catch (error) {
+        console.log(error);
+        return {
+            EM: 'error from service',
+            EC: 1,
+            DT: [],
+        };
+    }
+};
+
 module.exports = {
     getAllProducts,
     getProductsWithPagination,
     createProduct,
+    deleteProduct,
+    getListProductService,
 }

@@ -26,6 +26,10 @@ const initApiRoutes = (app) => {
 
     router.get("/admin/products/read", productController.readProducts);
     router.post("/admin/products/create", productController.createProducts);
+    router.delete("/admin/products/delete", productController.deleteProducts);
+
+    router.get("/admin/products/listProduct", productController.getListProduct);
+
 
     return app.use("/api/", router);
 };
