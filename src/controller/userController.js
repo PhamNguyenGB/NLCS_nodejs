@@ -24,9 +24,9 @@ const read = async (req, res) => {
         return res.status(500).json({
             EM: 'error from server read',
             EC: '-1',
-        })
+        });
     }
-}
+};
 
 const create = async (req, res) => {
     try {
@@ -65,9 +65,9 @@ const create = async (req, res) => {
         return res.status(500).json({
             EM: 'error from server create',
             EC: '-1',
-        })
+        });
     }
-}
+};
 
 const update = async (req, res) => {
     try {
@@ -82,9 +82,9 @@ const update = async (req, res) => {
         return res.status(500).json({
             EM: 'error from server create',
             EC: '-1',
-        })
+        });
     }
-}
+};
 
 const deleteUser = async (req, res) => {
     try {
@@ -99,13 +99,29 @@ const deleteUser = async (req, res) => {
         return res.status(500).json({
             EM: 'error from server read',
             EC: '-1',
-        })
+        });
     }
-}
+};
+
+const getUserAccount = async (req, res) => {
+    return res.status(200).json({
+        EM: 'success',
+        EC: 0,
+        DT: {
+            access_token: req.token,
+            data: req.user.groupWithRoles,
+            username: req.user.username,
+            address: req.user.address,
+            phone: req.user.phone,
+        },
+    });
+
+};
 
 module.exports = {
     read,
     create,
     update,
     deleteUser,
+    getUserAccount,
 }

@@ -1,10 +1,4 @@
-import loginRegister from '../service/loginRegister';
-
-const testApi = (req, res) => {
-    return res.status(200).json({
-        message: 'OK',
-    })
-};
+import loginRegister from '../service/loginRegisterService';
 
 const handleRegister = async (req, res) => {
     try {
@@ -64,36 +58,57 @@ const handleLogin = async (req, res) => {
             EM: 'error from server handleLogin',
             EC: '-1',
             DT: '',
-        })
+        });
     }
 };
 
 const handleLoginAdmin = async (req, res) => {
     try {
-        let data = await loginRegister.handleUserLogin(req.body);
-
+        let data = await loginRegister.handleAdminLogin(req.body);
         // set cookies
-        res.cookie("jwt", data.DT.access_token, { httpOnly: true, maxAge: 60 * 60 * 1000 });
+        if (data && data.DT && data.DT.access_token) {
+            res.cookie("jwt", data.DT.access_token, { httpOnly: true, maxAge: 60 * 60 * 1000 });
+        }
 
         return res.status(200).json({
             EM: data.EM,
             EC: data.EC,
             DT: data.DT,
         });
+
     } catch (error) {
         return res.status(500).json({
             EM: 'error from server handleLogin',
             EC: '-1',
             DT: '',
-        })
+        });
     }
 };
 
+const handleLogout = (req, res) => {
+    try {
+        res.clearCookie("jwt");
+        return res.status(200).json({
+            EM: 'logout successfully',
+            EC: 0,
+            DT: '',
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            EM: 'error from server handleLogout',
+            EC: '-1',
+            DT: '',
+        });
+    }
+};
+
+
+
 module.exports = {
-    testApi,
     handleRegister,
     handleLogin,
-
+    handleLogout,
 
     handleLoginAdmin,
 }

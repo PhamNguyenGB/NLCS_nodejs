@@ -11,18 +11,22 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Product.belongsTo(models.List_Product); 
-      Product.hasMany(models.Order_Detail); 
+      Product.belongsTo(models.List_Product);
+      Product.hasMany(models.Order_Detail);
     }
   };
   // Object relational mapping
   Product.init({
     name: DataTypes.STRING,
-    description: DataTypes.STRING,
+    ingredients: DataTypes.STRING,
     price: DataTypes.INTEGER,
     img: DataTypes.STRING,
     quantity: DataTypes.INTEGER,
-    type: DataTypes.STRING,
+    uses: DataTypes.STRING,
+    preserve: DataTypes.STRING,
+    pack: DataTypes.STRING,
+    origin: DataTypes.STRING,
+    productionSite: DataTypes.STRING,
     listProductId: DataTypes.INTEGER,
   }, {
     sequelize,

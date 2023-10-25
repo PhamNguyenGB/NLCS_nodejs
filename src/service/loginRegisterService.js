@@ -130,8 +130,10 @@ const handleUserLogin = async (data) => {
                 let groupWithRoles = await getGroupWithRole(user);
                 let payload = {
                     email: user.email,
+                    username: user.username,
+                    address: user.address,
+                    phone: user.phone,
                     groupWithRoles,
-                    expiresIn: process.env.JWT_EXPIRES_IN,
                 }
                 let token = createJWT(payload);
                 return {
@@ -140,7 +142,62 @@ const handleUserLogin = async (data) => {
                     DT: {
                         access_token: token,
                         data: groupWithRoles,
+                        email: user.email,
+                        username: user.username,
+                        address: user.address,
+                        phone: user.phone,
                     },
+                }
+            }
+        }
+        return {
+            EM: 'Tên tài khoản hoặc mật khẩu chưa chính xác',
+            EC: 1,
+            DT: '',
+        }
+
+    } catch (error) {
+        console.log(error);
+        return {
+            EM: 'Lỗi Đăng nhập',
+            EC: -2
+        }
+
+    }
+};
+
+const handleAdminLogin = async (data) => {
+    try {
+        // Check username, email and phone
+        let user = await db.User.findOne({
+            where: { username: data.username }
+        });
+        if (user) {
+            let isCorrectPassword = await checkPassword(data.password, user.password);
+            if (isCorrectPassword === true) {
+                if (user.dataValues.GroupId === 2) {
+
+                    // let token = 
+                    let groupWithRoles = await getGroupWithRole(user);
+                    let payload = {
+                        email: user.email,
+                        username: user.username,
+                        address: user.address,
+                        phone: user.phone,
+                        groupWithRoles,
+                    }
+                    let token = createJWT(payload);
+                    return {
+                        EM: 'Đăng nhập thành công',
+                        EC: 0,
+                        DT: {
+                            access_token: token,
+                            data: groupWithRoles,
+                            username: user.username,
+                            address: user.address,
+                            phone: user.phone,
+                        },
+                    }
                 }
             }
         }
@@ -163,4 +220,5 @@ const handleUserLogin = async (data) => {
 module.exports = {
     registerNewUser,
     handleUserLogin,
+    handleAdminLogin,
 }

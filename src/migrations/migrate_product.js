@@ -3,13 +3,15 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('Product', {
       id: {
-        type: Sequelize.STRING,
+        allowNull: false,
+        autoIncrement: true,
         primaryKey: true,
+        type: Sequelize.INTEGER
       },
       name: {
         type: Sequelize.STRING
       },
-      description: {
+      ingredients: {
         type: Sequelize.STRING
       },
       price: {
@@ -21,7 +23,22 @@ module.exports = {
       quantity: {
         type: Sequelize.INTEGER
       },
-      type: {
+      uses: {
+        type: Sequelize.STRING
+      },
+      user: {
+        type: Sequelize.STRING
+      },
+      preserve: {
+        type: Sequelize.STRING
+      },
+      pack: {
+        type: Sequelize.STRING
+      },
+      origin: {
+        type: Sequelize.STRING
+      },
+      productionSite: {
         type: Sequelize.STRING
       },
       listProductId: {
@@ -41,12 +58,3 @@ module.exports = {
     await queryInterface.dropTable('Product');
   }
 };
-
-// id: DataTypes.STRING,
-//     name: DataTypes.STRING,
-//     description: DataTypes.STRING,
-//     price: DataTypes.INTEGER,
-//     img: DataTypes.STRING,
-//     quantity: DataTypes.INTEGER,
-//     type: DataTypes.STRING,
-//     listProductId: DataTypes.INTEGER,

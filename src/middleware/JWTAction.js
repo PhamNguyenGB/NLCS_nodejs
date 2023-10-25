@@ -1,11 +1,12 @@
 require("dotenv").config();
 import jwt from 'jsonwebtoken';
+import db from '../models/index';
 
 const createJWT = (payload) => {
     let key = process.env.JWT_SECRET;
     let token = null;
     try {
-        token = jwt.sign(payload, key);
+        token = jwt.sign(payload, key, { expiresIn: process.env.JWT_EXPIRES_IN });
     } catch (error) {
         console.log(error);
     }
@@ -14,17 +15,70 @@ const createJWT = (payload) => {
 
 const veryfyToken = (token) => {
     let key = process.env.JWT_SECRET;
-    let data = null;
+    let decoded = null;
     try {
-        let decoded = jwt.verify(token, key);
-        data = decoded;
+        decoded = jwt.verify(token, key);
     } catch (error) {
         console.log(error);
     }
-    return data;
+    return decoded;
 };
+
+const checkUserJWT = (req, res, next) => {
+    let cookies = req.cookies;
+    if (cookies && cookies.jwt) {
+        let token = cookies.jwt;
+        let decoded = veryfyToken(token);
+        if (decoded) {
+            req.user = decoded;
+            req.token = token;
+
+            next();
+        } else {
+            return res.status(401).json({
+                EM: 'Bạn chưa đăng nhập!',
+                EC: -1,
+                DT: '',
+            });
+        }
+    } else {
+        return res.status(401).json({
+            EM: 'Bạn chưa đăng nhập!',
+            EC: -1,
+            DT: '',
+        });
+    }
+};
+
+const checkUserPermission = async (req, res, next) => {
+    if (req.user) {
+        let username = req.user.username
+        let roles = req.user.data.Roles;
+        let currentUrl = req.path;
+        if (!roles && roles.length === 0) {
+            return res.status(403).json({
+                EM: 'Bạn không có quyền truy cập',
+                EC: -1,
+                DT: '',
+            });
+        }
+
+        let canAccess = roles.some(item => item.url === currentUrl);
+        if (canAccess === true) {
+            next();
+        } else {
+            return res.status(403).json({
+                EM: 'Bạn không có quyền truy cập',
+                EC: -1,
+                DT: '',
+            });
+        }
+    }
+}
 
 module.exports = {
     createJWT,
     veryfyToken,
+    checkUserJWT,
+    checkUserPermission,
 } 
