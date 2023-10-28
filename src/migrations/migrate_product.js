@@ -21,7 +21,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       img: {
-        type: Sequelize.STRING
+        type: Sequelize.BLOB
       },
       quantity: {
         type: Sequelize.INTEGER

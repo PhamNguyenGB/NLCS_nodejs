@@ -5,7 +5,7 @@ import productController from "../controller/productController";
 import { checkUserJWT, checkUserPermission } from '../middleware/JWTAction';
 import multer from 'multer';
 
-const upload = multer({ dest: './assets/image' });
+let multerInstance = multer();
 
 const router = express.Router();
 
@@ -25,7 +25,7 @@ const initApiRoutes = (app) => {
     router.delete("/admin/users/delete", userController.deleteUser);
 
     router.get("/admin/products/read", productController.readProducts);
-    router.post("/admin/products/create", productController.createProducts);
+    router.post("/admin/products/create", multerInstance.any(), productController.createProducts);
     router.delete("/admin/products/delete", productController.deleteProducts);
 
     router.get("/admin/products/listProduct", productController.getListProduct);

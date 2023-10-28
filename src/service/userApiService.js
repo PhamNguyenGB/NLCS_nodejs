@@ -107,7 +107,6 @@ const checkPhone = async (phone) => {
 const createUser = async (data) => {
     try {
         let isUsernameExist = await checkUsername(data.username);
-        console.log("check data", data);
         if (isUsernameExist === true) {
             return {
                 EM: 'Tên tài khoản đã tồn tại',

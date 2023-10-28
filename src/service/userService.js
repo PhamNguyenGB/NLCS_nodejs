@@ -42,8 +42,6 @@ const getUserList = async () => {
         raw: true,
         nest: true
     });
-
-    console.log("check user list", user);
     // const connection = await mysql.createConnection({host:'localhost', user: 'root', database: 'db_medicine', Promise: bluebird});
 
     // try {

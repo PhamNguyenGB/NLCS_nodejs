@@ -71,7 +71,7 @@ const createProduct = async (data) => {
             ingredients: data.ingredients,
             objectOfUse: data.objectOfUse,
             price: data.price,
-            img: data.img,
+            img: '',
             quantity: data.quantity,
             uses: data.uses,
             preserve: data.preserve,

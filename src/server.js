@@ -5,6 +5,7 @@ import initApiRoutes from "./routes/api";
 import bodyParser from "body-parser";
 import configCors from "./config/cors";
 import cookieParser from "cookie-parser";
+import fileUpload from "express-fileupload";
 
 require("dotenv").config();
 
@@ -18,8 +19,11 @@ configCors(app);
 configViewEngine(app);
 
 //config body parser
+app.use(fileUpload());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+
 
 //config cookie-parser
 app.use(express.static('assets'));

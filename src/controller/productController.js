@@ -30,7 +30,8 @@ const readProducts = async (req, res) => {
 
 const createProducts = async (req, res) => {
     try {
-        console.log("check req", req);
+        console.log(req.body);
+        console.log(req.body.files);
         let data = await productApiService.createProduct(req.body);
         return res.status(200).json({
             EM: data.EM,
