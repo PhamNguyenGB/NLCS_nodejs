@@ -6,6 +6,9 @@ import bodyParser from "body-parser";
 import configCors from "./config/cors";
 import cookieParser from "cookie-parser";
 import fileUpload from "express-fileupload";
+import multer from 'multer';
+
+const upload = multer({ dest: 'src/assets/image' })
 
 require("dotenv").config();
 
@@ -26,7 +29,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 
 //config cookie-parser
-app.use(express.static('assets'));
+app.use(express.static('src/assets'));
 app.use(cookieParser());
 
 
@@ -38,9 +41,9 @@ initApiRoutes(app);
 // connection();
 
 
-// app.use((req, res) => {
-//     return res.send("404 not found");
-// })
+app.use((req, res) => {
+    return res.send("404 not found");
+})
 
 app.listen(PORT, () => {
     console.log("Backend is running on port " + PORT);
