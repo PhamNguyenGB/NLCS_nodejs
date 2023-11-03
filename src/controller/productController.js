@@ -1,4 +1,6 @@
 import productApiService from '../service/productApiService';
+import fs from 'fs';
+import path from 'path';
 
 const readProducts = async (req, res) => {
     try {
@@ -30,9 +32,7 @@ const readProducts = async (req, res) => {
 
 const createProducts = async (req, res) => {
     try {
-        console.log(req.body);
-        console.log(req.body.files);
-        let data = await productApiService.createProduct(req.body);
+        let data = await productApiService.createProduct(req.body, req.file);
         return res.status(200).json({
             EM: data.EM,
             EC: data.EC,
@@ -49,6 +49,7 @@ const createProducts = async (req, res) => {
 
 const deleteProducts = async (req, res) => {
     try {
+        await productApiService.deleteFile(req.body.id);
         let data = await productApiService.deleteProduct(req.body.id);
         return res.status(200).json({
             EM: data.EM,
@@ -81,9 +82,30 @@ const getListProduct = async (req, res) => {
     }
 };
 
+const updateProducts = async (req, res) => {
+    try {
+        if (req.file) {
+            await productApiService.deleteFile(req.body.id);
+        }
+        let data = await productApiService.updateProduct(req.body.id, req.body, req.file);
+        return res.status(200).json({
+            EM: data.EM,
+            EC: data.EC,
+            DT: data.DT,
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            EM: 'error from server create',
+            EC: '-1',
+        });
+    }
+}
+
 module.exports = {
     readProducts,
     createProducts,
     deleteProducts,
     getListProduct,
+    updateProducts,
 }

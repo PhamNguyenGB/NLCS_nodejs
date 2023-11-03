@@ -1,6 +1,6 @@
-require("dotenv").config();
 import jwt from 'jsonwebtoken';
 import db from '../models/index';
+require("dotenv").config();
 
 const createJWT = (payload) => {
     let key = process.env.JWT_SECRET;

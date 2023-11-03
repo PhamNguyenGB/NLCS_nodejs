@@ -4,7 +4,7 @@ import userController from "../controller/userController";
 import productController from "../controller/productController";
 import { checkUserJWT, checkUserPermission } from '../middleware/JWTAction';
 import customerController from "../controller/customerController";
-import { upload } from '../middleware/uploadFile';
+import upload from '../middleware/uploadFile';
 const router = express.Router();
 
 const initApiRoutes = (app) => {
@@ -28,6 +28,7 @@ const initApiRoutes = (app) => {
     // Admin products routes
     router.get("/admin/products/read", productController.readProducts);
     router.post("/admin/products/create", upload.single('img'), productController.createProducts);
+    router.put("/admin/products/update", upload.single('img'), productController.updateProducts);
     router.delete("/admin/products/delete", productController.deleteProducts);
 
     router.get("/admin/products/listProduct", productController.getListProduct);

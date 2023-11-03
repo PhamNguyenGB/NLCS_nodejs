@@ -6,9 +6,6 @@ import bodyParser from "body-parser";
 import configCors from "./config/cors";
 import cookieParser from "cookie-parser";
 import fileUpload from "express-fileupload";
-import multer from 'multer';
-
-const upload = multer({ dest: 'src/assets/image' })
 
 require("dotenv").config();
 
@@ -22,9 +19,9 @@ configCors(app);
 configViewEngine(app);
 
 //config body parser
-app.use(fileUpload());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(fileUpload());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 
 
