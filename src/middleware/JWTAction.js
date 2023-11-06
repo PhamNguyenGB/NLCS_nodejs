@@ -2,6 +2,8 @@ import jwt from 'jsonwebtoken';
 import db from '../models/index';
 require("dotenv").config();
 
+const nonSecurePathsAdmin = ['/admin', '/admin/products/listProduct', '/login', '/register', '/products/read', '/logout', '/shoppingCart', '/products/addCart', '/checkOrder'];
+
 const createJWT = (payload) => {
     let key = process.env.JWT_SECRET;
     let token = null;
@@ -30,10 +32,45 @@ const checkUserJWT = (req, res, next) => {
         let token = cookies.jwt;
         let decoded = veryfyToken(token);
         if (decoded) {
+            console.log(req.user);
             req.user = decoded;
             req.token = token;
 
             next();
+        } else {
+            return res.status(401).json({
+                EM: 'Bạn chưa đăng nhập!',
+                EC: -1,
+                DT: '',
+            });
+        }
+    } else {
+        return res.status(401).json({
+            EM: 'Bạn chưa đăng nhập!',
+            EC: -1,
+            DT: '',
+        });
+    }
+};
+
+const checkAdminJWT = (req, res, next) => {
+    if (nonSecurePathsAdmin.includes(req.path)) return next();
+    let cookies = req.cookies;
+    if (cookies && cookies.jwt) {
+        let token = cookies.jwt;
+        let decoded = veryfyToken(token);
+        if (decoded) {
+            req.user = decoded;
+            req.token = token;
+            if (req.user.groupWithRoles.id === 2) {
+                next();
+            } else {
+                return res.status(403).json({
+                    EM: 'Bạn không có quyền truy cập',
+                    EC: -1,
+                    DT: '',
+                });
+            }
         } else {
             return res.status(401).json({
                 EM: 'Bạn chưa đăng nhập!',
@@ -81,4 +118,5 @@ module.exports = {
     veryfyToken,
     checkUserJWT,
     checkUserPermission,
+    checkAdminJWT,
 } 

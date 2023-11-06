@@ -237,6 +237,103 @@ const updateProduct = async (idProduct, data, file) => {
     }
 };
 
+const createListProductService = async (data) => {
+    try {
+        await db.List_Product.create({
+            categoryName: data.categoryName,
+            description: data.description,
+        });
+        return {
+            EM: 'create list product successful',
+            EC: 0,
+            DT: [],
+        };
+    } catch (error) {
+        console.log(error);
+        return {
+            EM: 'error create list product',
+            EC: 1,
+            DT: '',
+        };
+    }
+};
+
+const addCartService = async (data) => {
+    try {
+        await db.Order.create({
+            userId: data.account.id,
+            address: data.account.address,
+            phone: data.account.phone,
+            totalCost: data.quantity * data.price,
+            pay: data.quantity,
+        });
+        return {
+            EM: 'Thêm sản phẩm thành công',
+            EC: 0,
+            DT: [],
+        };
+
+    } catch (error) {
+        console.log(error);
+        return {
+            EM: 'error add cart',
+            EC: 1,
+            DT: '',
+        };
+    }
+};
+
+const updateCartService = async (data) => {
+    try {
+        let idUser = await db.Order.findOne({
+            where: { userId: data.account.id }
+        });
+        if (idUser) {
+            await idUser.update({
+                totalCost: idUser.totalCost + (data.quantity * data.price),
+                pay: idUser.pay + data.quantity,
+            });
+        }
+        return {
+            EM: 'Thêm sản phẩm thành công',
+            EC: 0,
+            DT: [],
+        };
+    } catch (error) {
+        console.log(error);
+        return {
+            EM: 'error update cart',
+            EC: 1,
+            DT: '',
+        };
+    }
+};
+
+const checkOrderService = async (data) => {
+    try {
+        let idUser = await db.Order.findOne({
+            where: { userId: data.account.id }
+        });
+        if (idUser) {
+            return {
+                EC: 0,
+                DT: [],
+            };
+        }
+        return {
+            EC: -1,
+            DT: [],
+        }
+    } catch (error) {
+        console.log(error);
+        return {
+            EM: 'error check order',
+            EC: 1,
+            DT: '',
+        };
+    }
+};
+
 module.exports = {
     getAllProducts,
     getProductsWithPagination,
@@ -245,4 +342,8 @@ module.exports = {
     getListProductService,
     updateProduct,
     deleteFile,
+    createListProductService,
+    addCartService,
+    updateCartService,
+    checkOrderService,
 }

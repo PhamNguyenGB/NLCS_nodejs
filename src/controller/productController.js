@@ -1,8 +1,34 @@
 import productApiService from '../service/productApiService';
-import fs from 'fs';
-import path from 'path';
 
 const readProducts = async (req, res) => {
+    try {
+        if (req.query.page && req.query.limit) {
+            let page = req.query.page;
+            let limit = req.query.limit;
+            let data = await productApiService.getProductsWithPagination(+page, +limit);
+            return res.status(200).json({
+                EM: data.EM,
+                EC: data.EC,
+                DT: data.DT,
+            });
+        } else {
+            let data = await productApiService.getAllProducts();
+            return res.status(200).json({
+                EM: data.EM,
+                EC: data.EC,
+                DT: data.DT,
+            });
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            EM: 'error from server read',
+            EC: '-1',
+        });
+    }
+};
+
+const readProductHomePage = async (req, res) => {
     try {
         if (req.query.page && req.query.limit) {
             let page = req.query.page;
@@ -102,10 +128,86 @@ const updateProducts = async (req, res) => {
     }
 }
 
+const createListProduct = async (req, res) => {
+    try {
+        let data = await productApiService.createListProductService(req.body);
+        return res.status(200).json({
+            EM: data.EM,
+            EC: data.EC,
+            DT: data.DT,
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            EM: 'error from server create list product',
+            EC: '-1',
+        });
+    }
+};
+
+const addCart = async (req, res) => {
+    try {
+        let data = await productApiService.updateCartService(req.body);
+        return res.status(200).json({
+            EM: data.EM,
+            EC: data.EC,
+            DT: data.DT,
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            EM: 'error from server update cart',
+            EC: '-1',
+            DT: '',
+        });
+    }
+};
+
+const updateCart = async (req, res) => {
+    try {
+        let data = await productApiService.addCartService(req.body);
+        return res.status(200).json({
+            EM: data.EM,
+            EC: data.EC,
+            DT: data.DT,
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            EM: 'error from server add cart',
+            EC: '-1',
+            DT: '',
+        });
+    }
+};
+
+const checkOrder = async (req, res) => {
+    try {
+        let data = await productApiService.checkOrderService(req.body);
+        return res.status(200).json({
+            EM: data.EM,
+            EC: data.EC,
+            DT: '',
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            EM: 'error from server add cart',
+            EC: '-1',
+            DT: '',
+        });
+    }
+};
+
 module.exports = {
     readProducts,
     createProducts,
     deleteProducts,
     getListProduct,
     updateProducts,
+    createListProduct,
+    readProductHomePage,
+    addCart,
+    updateCart,
+    checkOrder,
 }
