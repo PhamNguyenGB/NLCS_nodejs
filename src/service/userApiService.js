@@ -236,10 +236,191 @@ const deleteUser = async (id) => {
     }
 };
 
+const getOrderWithPagination = async (page, limit) => {
+    try {
+        let offset = (page - 1) * limit;
+        const { count, rows } = await db.Order.findAndCountAll({
+            offset: offset,
+            limit: limit,
+        });
+
+        let totalPages = Math.ceil(count / limit);
+
+        let data = {
+            totalRows: count,
+            totalPages: totalPages,
+            users: rows,
+        }
+
+        return {
+            EM: 'fetch  OKE',
+            EC: 0,
+            DT: data,
+        };
+    } catch (error) {
+        console.log(error);
+        return {
+            EM: 'error getting order with pagination',
+            EC: 1,
+            DT: '',
+        };
+    }
+}
+
+const getAllOrder = async () => {
+    try {
+        let order = await db.Order.findAll({});
+        if (order) {
+            return {
+                EM: 'success',
+                EC: 0,
+                DT: order,
+            };
+        }
+        else {
+            return {
+                EM: 'order not found',
+                EC: 0,
+                DT: [],
+            }
+        }
+    } catch (error) {
+        console.log(error);
+        return {
+            EM: 'error getting order',
+            EC: 1,
+            DT: '',
+        };
+    }
+};
+
+const getAllOrderDetail = async (idOrder) => {
+    try {
+        let data = await db.Order_Detail.findAll({
+            where: { orderId: idOrder },
+            include: { model: db.Product },
+        })
+        if (data) {
+            return {
+                EM: 'success',
+                EC: 0,
+                DT: data,
+            };
+        } else {
+            return {
+                EM: 'order detail not found',
+                EC: 0,
+                DT: [],
+            }
+        }
+    } catch (error) {
+        console.log(error);
+        return {
+            EM: 'error getting order',
+            EC: 1,
+            DT: '',
+        };
+    }
+};
+
+const getAllMyOrder = async (user) => {
+    try {
+        let data = await db.Order.findAll({
+            where: { phone: user.phone },
+        })
+        if (data) {
+            return {
+                EM: 'success',
+                EC: 0,
+                DT: data,
+            };
+        } else {
+            return {
+                EM: 'order not found',
+                EC: 0,
+                DT: [],
+            }
+        }
+    } catch (error) {
+        console.log(error);
+        return {
+            EM: 'error getting order',
+            EC: 1,
+            DT: '',
+        };
+    }
+};
+
+const getMyOrderWithPagination = async (page, limit) => {
+    try {
+        let offset = (page - 1) * limit;
+        const { count, rows } = await db.Order.findAndCountAll({
+            offset: offset,
+            limit: limit,
+        });
+
+        let totalPages = Math.ceil(count / limit);
+
+        let data = {
+            totalRows: count,
+            totalPages: totalPages,
+            users: rows,
+        }
+
+        return {
+            EM: 'fetch  OKE',
+            EC: 0,
+            DT: data,
+        };
+    } catch (error) {
+        console.log(error);
+        return {
+            EM: 'error getting order with pagination',
+            EC: 1,
+            DT: '',
+        };
+    }
+};
+
+const getMyOrderDetail = async (idOrder) => {
+    try {
+        let data = await db.Order_Detail.findAll({
+            where: { orderId: idOrder },
+            include: { model: db.Product },
+        })
+        if (data) {
+            return {
+                EM: 'success',
+                EC: 0,
+                DT: data,
+            };
+        } else {
+            return {
+                EM: 'order detail not found',
+                EC: 0,
+                DT: [],
+            }
+        }
+    } catch (error) {
+        console.log(error);
+        return {
+            EM: 'error getting order',
+            EC: 1,
+            DT: '',
+        };
+    }
+};
+
 module.exports = {
     getAllUser,
     createUser,
     updateUser,
     deleteUser,
     getUsersWithPagination,
+    getOrderWithPagination,
+    getAllOrder,
+    getAllOrderDetail,
+    getAllMyOrder,
+    getMyOrderWithPagination,
+    getMyOrderDetail,
 }

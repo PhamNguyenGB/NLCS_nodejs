@@ -264,11 +264,11 @@ const addCartService = async (data) => {
             userId: data.account.id,
             address: data.account.address,
             phone: data.account.phone,
-            totalCost: data.quantity * data.price,
+            totalCost: data.cartTotal,
             pay: data.quantity,
         });
         return {
-            EM: 'Thêm sản phẩm thành công',
+            EM: 'Đặt hàng thành công',
             EC: 0,
             DT: [],
         };
@@ -283,31 +283,37 @@ const addCartService = async (data) => {
     }
 };
 
-const updateCartService = async (data) => {
-    try {
-        let idUser = await db.Order.findOne({
-            where: { userId: data.account.id }
-        });
-        if (idUser) {
-            await idUser.update({
-                totalCost: idUser.totalCost + (data.quantity * data.price),
-                pay: idUser.pay + data.quantity,
-            });
-        }
-        return {
-            EM: 'Thêm sản phẩm thành công',
-            EC: 0,
-            DT: [],
-        };
-    } catch (error) {
-        console.log(error);
-        return {
-            EM: 'error update cart',
-            EC: 1,
-            DT: '',
-        };
-    }
-};
+// const updateCartService = async (data) => {
+//     try {
+//         let idUser = await db.Order.findOne({
+//             where: { userId: data.account.id }
+//         });
+//         if (idUser) {
+//             await idUser.update({
+//                 totalCost: idUser.totalCost + (data.quantity * data.price),
+//                 pay: idUser.pay + data.quantity,
+//             });
+//             return {
+//                 EM: 'Thêm sản phẩm thành công',
+//                 EC: 0,
+//                 DT: [],
+//             };
+//         } else {
+//             return {
+//                 EM: 'Bạn chưa đăng nhập',
+//                 EC: 0,
+//                 DT: [],
+//             }
+//         }
+//     } catch (error) {
+//         console.log(error);
+//         return {
+//             EM: 'error update cart',
+//             EC: 1,
+//             DT: '',
+//         };
+//     }
+// };
 
 const checkOrderService = async (data) => {
     try {
@@ -334,6 +340,84 @@ const checkOrderService = async (data) => {
     }
 };
 
+const addOrderDetailService = async (data, user) => {
+    try {
+        let order = await db.Order.findOne({
+            where: { userId: user.id }
+        });
+        if (order) {
+            let price = await db.Order.findOne({
+                where: { userId: order.dataValues.userId },
+                order: [['createdAt', 'DESC']],
+            });
+            if (price) {
+                data.map(async (item) => {
+                    await db.Order_Detail.create({
+                        orderId: price.id,
+                        ProductId: item.id,
+                        price: item.price,
+                        quantity: item.quantity,
+                    });
+                });
+                return {
+                    EM: 'add order detail successfully',
+                    EC: 0,
+                    DT: [],
+                };
+            }
+        }
+        return {
+            EM: 'error add order detail',
+            EC: 1,
+            DT: '',
+        };
+    } catch (error) {
+        console.log(error);
+        return {
+            EM: 'error add order detail',
+            EC: 1,
+            DT: '',
+        };
+    }
+};
+
+const updateOrderDetailService = async (data) => {
+    // try {
+    //     let order = await db.Order.findOne({
+    //         where: { userId: data.account.id }
+    //     });
+    //     if (order) {
+    //         let orderDetail = await db.Order_Detail.findOne({
+    //             where: { ProductId: data.id }
+    //         });
+    //         if (orderDetail) {
+    //             await idUser.update({
+    //                 totalCost: idUser.totalCost + (data.quantity * data.price),
+    //                 pay: idUser.pay + data.quantity,
+    //             });
+    //             return {
+    //                 EM: 'Thêm sản phẩm thành công',
+    //                 EC: 0,
+    //                 DT: [],
+    //             };
+    //         }
+    //     } else {
+    //         return {
+    //             EM: 'Bạn chưa đăng nhập',
+    //             EC: 0,
+    //             DT: [],
+    //         }
+    //     }
+    // } catch (error) {
+    //     console.log(error);
+    //     return {
+    //         EM: 'error update cart',
+    //         EC: 1,
+    //         DT: '',
+    //     };
+    // }
+};
+
 module.exports = {
     getAllProducts,
     getProductsWithPagination,
@@ -344,6 +428,6 @@ module.exports = {
     deleteFile,
     createListProductService,
     addCartService,
-    updateCartService,
     checkOrderService,
+    addOrderDetailService,
 }

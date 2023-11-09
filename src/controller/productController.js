@@ -147,7 +147,7 @@ const createListProduct = async (req, res) => {
 
 const addCart = async (req, res) => {
     try {
-        let data = await productApiService.updateCartService(req.body);
+        let data = await productApiService.addCartService(req.body);
         return res.status(200).json({
             EM: data.EM,
             EC: data.EC,
@@ -199,6 +199,42 @@ const checkOrder = async (req, res) => {
     }
 };
 
+const addOrderDetail = async (req, res) => {
+    try {
+        let data = await productApiService.addOrderDetailService(req.body, req.user);
+        return res.status(200).json({
+            EM: data.EM,
+            EC: data.EC,
+            DT: '',
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            EM: 'error from server add cart',
+            EC: '-1',
+            DT: '',
+        });
+    }
+};
+
+const updateOrderDetail = async (req, res) => {
+    try {
+        let data = await productApiService.updateOrderDetailService(req.body);
+        return res.status(200).json({
+            EM: data.EM,
+            EC: data.EC,
+            DT: data.DT,
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            EM: 'error from server update order detail',
+            EC: '-1',
+            DT: '',
+        });
+    }
+};
+
 module.exports = {
     readProducts,
     createProducts,
@@ -210,4 +246,6 @@ module.exports = {
     addCart,
     updateCart,
     checkOrder,
+    addOrderDetail,
+    updateOrderDetail,
 }

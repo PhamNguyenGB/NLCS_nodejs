@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import db from '../models/index';
 require("dotenv").config();
 
-const nonSecurePathsAdmin = ['/admin', '/admin/products/listProduct', '/login', '/register', '/products/read', '/logout', '/shoppingCart', '/products/addCart', '/checkOrder'];
+// const nonSecurePathsAdmin = ['/admin', '/admin/products/listProduct', '/login', '/register', '/products/read', '/logout', '/shoppingCart', '/products/addCart', '/checkOrder', '/admin/products/listProduct/create'];
 
 const createJWT = (payload) => {
     let key = process.env.JWT_SECRET;
@@ -32,10 +32,8 @@ const checkUserJWT = (req, res, next) => {
         let token = cookies.jwt;
         let decoded = veryfyToken(token);
         if (decoded) {
-            console.log(req.user);
             req.user = decoded;
             req.token = token;
-
             next();
         } else {
             return res.status(401).json({
@@ -54,7 +52,7 @@ const checkUserJWT = (req, res, next) => {
 };
 
 const checkAdminJWT = (req, res, next) => {
-    if (nonSecurePathsAdmin.includes(req.path)) return next();
+    // if (nonSecurePathsAdmin.includes(req.path)) return next();
     let cookies = req.cookies;
     if (cookies && cookies.jwt) {
         let token = cookies.jwt;

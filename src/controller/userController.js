@@ -111,11 +111,103 @@ const getUserAccount = async (req, res) => {
             access_token: req.token,
             data: req.user.groupWithRoles,
             username: req.user.username,
+            email: req.user.email,
             address: req.user.address,
             phone: req.user.phone,
         },
     });
 
+};
+
+const readOrder = async (req, res) => {
+    try {
+        if (req.query.page && req.query.limit) {
+            let page = req.query.page;
+            let limit = req.query.limit;
+            let data = await userApiService.getOrderWithPagination(+page, +limit);
+            return res.status(200).json({
+                EM: data.EM,
+                EC: data.EC,
+                DT: data.DT,
+            });
+        } else {
+            let data = await userApiService.getAllOrder();
+            return res.status(200).json({
+                EM: data.EM,
+                EC: data.EC,
+                DT: data.DT,
+            });
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            EM: 'error from server read',
+            EC: '-1',
+        });
+    }
+};
+
+const readOrderDetail = async (req, res) => {
+    try {
+        let data = await userApiService.getAllOrderDetail(req.body.id);
+        return res.status(200).json({
+            EM: data.EM,
+            EC: data.EC,
+            DT: data.DT,
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            EM: 'error from server Detail Order',
+            EC: '-1',
+        });
+    }
+};
+
+const getMyOrder = async (req, res) => {
+    try {
+        if (req.query.page && req.query.limit) {
+            let page = req.query.page;
+            let limit = req.query.limit;
+            let data = await userApiService.getMyOrderWithPagination(+page, +limit);
+            return res.status(200).json({
+                EM: data.EM,
+                EC: data.EC,
+                DT: data.DT,
+            });
+        } else {
+
+            let data = await userApiService.getAllMyOrder(req.user);
+            return res.status(200).json({
+                EM: data.EM,
+                EC: data.EC,
+                DT: data.DT,
+            });
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            EM: 'error from server Detail Order',
+            EC: '-1',
+        });
+    }
+};
+
+const getMyOrderDetail = async (req, res) => {
+    try {
+        let data = await userApiService.getMyOrderDetail(req.params.id);
+        return res.status(200).json({
+            EM: data.EM,
+            EC: data.EC,
+            DT: data.DT,
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            EM: 'error from server my Detail Order',
+            EC: '-1',
+        });
+    }
 };
 
 
@@ -125,4 +217,8 @@ module.exports = {
     update,
     deleteUser,
     getUserAccount,
+    readOrder,
+    readOrderDetail,
+    getMyOrder,
+    getMyOrderDetail,
 }
